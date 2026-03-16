@@ -1,0 +1,12 @@
+{
+  "name": "polkazk-credit",
+  "private": true,
+  "packageManager": "pnpm@10.8.1",
+  "scripts": {
+    "build": "pnpm --filter @polkazk/web build",
+    "lint": "pnpm --filter @polkazk/web lint",
+    "test": "pnpm --filter @polkazk/web test",
+    "typecheck": "pnpm --filter @polkazk/web typecheck"
+  }
+}
+

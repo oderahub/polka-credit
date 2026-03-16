@@ -1,0 +1,27 @@
+{
+  "name": "@polkazk/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "test": "node -e \"console.log('No frontend tests yet')\"",
+    "typecheck": "next build"
+  },
+  "dependencies": {
+    "@polkazk/shared": "workspace:*",
+    "next": "15.3.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "viem": "2.29.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.0",
+    "@types/react": "19.1.2",
+    "@types/react-dom": "19.1.2",
+    "eslint": "9.24.0",
+    "eslint-config-next": "15.3.0",
+    "typescript": "5.8.3"
+  }
+}
