@@ -1,14 +1,14 @@
 # Polka Credit
 
-PolkaZK Credit lets users prove governance reputation and unlock better DeFi lending terms on Polkadot Hub without exposing their full on-chain history.
+Polka Credit lets users prove governance reputation and unlock better DeFi lending terms on Polkadot Hub without exposing their full on-chain history.
 
-PolkaZK Credit is a Solidity-based DeFi credit primitive on Polkadot Hub. A user submits a governance-derived proof, receives a soulbound on-chain credit credential, and gets better lending terms through a live lending demo.
+Polka Credit is a Solidity-based DeFi credit primitive on Polkadot Hub. A user submits a governance-derived proof, receives a soulbound on-chain credit credential, and gets better lending terms through a live lending demo.
 
 This repository is the Polkadot Solidity Hackathon 2026 MVP. The strongest fit is Track 1 (EVM Smart Contract / DeFi), with a real Track 2 angle through System precompile usage, native-asset precompile paths, and a verifier architecture that can evolve toward deeper native execution.
 
 ## What It Does
 
-PolkaZK Credit turns governance-linked reputation into a reusable DeFi credit primitive:
+Polka Credit turns governance-linked reputation into a reusable DeFi credit primitive:
 
 - a user connects a wallet on Polkadot Hub Testnet
 - the app checks the wallet against a fixture-backed governance snapshot
@@ -125,7 +125,7 @@ The checked-in MVP uses a deterministic governance snapshot fixture so the flow 
 
 ### Primary fit: Track 1, EVM Smart Contract Track
 
-PolkaZK Credit fits Track 1 directly:
+Polka Credit fits Track 1 directly:
 
 - the product is built with Solidity and EVM-compatible contracts
 - it is deployed on `Polkadot Hub Testnet`
@@ -143,7 +143,7 @@ The codebase also has a meaningful Track 2 angle. The current deployment is stil
 
 ## Why Polkadot
 
-PolkaZK Credit uses Polkadot Hub capabilities that are awkward or unavailable in a standard EVM-only design:
+Polka Credit uses Polkadot Hub capabilities that are awkward or unavailable in a standard EVM-only design:
 
 - native precompile access for runtime-oriented verification paths
 - cross-VM certificate binding from EVM address to native account ID through `toAccountId(address)`
@@ -157,7 +157,7 @@ This lets the product combine Solidity UX with native-chain capabilities instead
 
 DeFi lending usually treats wallets as reputation-blind and pushes users toward high collateral requirements.
 
-PolkaZK Credit demonstrates a better model:
+Polka Credit demonstrates a better model:
 
 - users prove eligibility, not full history
 - credit becomes composable on-chain
