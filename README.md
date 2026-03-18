@@ -1,10 +1,10 @@
 # Polka Credit
 
-Privacy-aware on-chain credit scoring for DeFi on Polkadot Hub.
+PolkaZK Credit lets users prove governance reputation and unlock better DeFi lending terms on Polkadot Hub without exposing their full on-chain history.
 
-PolkaZK Credit lets a user submit a private governance reputation certificate, receive a soulbound credit score, and unlock better lending terms without exposing their full governance history.
+PolkaZK Credit is a Solidity-based DeFi credit primitive on Polkadot Hub. A user submits a governance-derived proof, receives a soulbound on-chain credit credential, and gets better lending terms through a live lending demo.
 
-This repository is the Track 2 hackathon MVP for the Polkadot Solidity Hackathon 2026.
+This repository is the Polkadot Solidity Hackathon 2026 MVP. The strongest fit is Track 1 (EVM Smart Contract / DeFi), with a real Track 2 angle through System precompile usage, native-asset precompile paths, and a verifier architecture that can evolve toward deeper native execution.
 
 ## What It Does
 
@@ -121,29 +121,25 @@ The MVP supports these certificate-generation paths conceptually:
 
 The checked-in MVP uses a deterministic governance snapshot fixture so the flow stays reproducible for judges. The verifier boundary is designed so that fixture can later be replaced by live Polkassembly/Subsquare ingestion or a ZK backend without changing the adapter contract.
 
-## Track 2 Positioning
+## Track Fit
 
-This project is submitted for `Track 2: PVM Smart Contracts`.
+### Primary fit: Track 1, EVM Smart Contract Track
 
-The current deployment is on Polkadot Hub `EVM/REVM` using standard Solidity tooling. Track 2 relevance comes from native capability usage, not from incorrectly claiming a PolkaVM deployment today.
+PolkaZK Credit fits Track 1 directly:
 
-> **Why Track 2?** Certificates use cross-VM identity binding between the EVM address and native Substrate account via the `System` precompile in `AttestedSnapshotVerifier.sol`, the lending path uses the ERC20 native asset precompile model in `LendingDemo.sol`, and the adapter is ready for Rust/PolkaVM upgrades.
+- the product is built with Solidity and EVM-compatible contracts
+- it is deployed on `Polkadot Hub Testnet`
+- it is a DeFi / stablecoin-enabled dapp
+- the user-facing outcome is financial: improved APR and borrow capacity from verified reputation
 
-Current Track 2 proof points:
+### Secondary fit: Track 2, PVM Smart Contracts
 
-- `System` precompile-aware verifier path in the codebase
-- cross-VM certificate binding through `toAccountId(address)` on the `System` precompile
+The codebase also has a meaningful Track 2 angle. The current deployment is still on Polkadot Hub `EVM/REVM`, but it uses Polkadot-native capabilities in real parts of the architecture:
+
+- `System` precompile-aware verification paths
+- cross-VM certificate binding through `toAccountId(address)`
 - native asset-aware lending path through the `ERC20` precompile model
-- stable verifier adapter that supports later Rust/PolkaVM upgrades
-- real deployment on `Polkadot Hub Testnet`
-
-## Track 2 Checklist
-
-- [x] Deployment on Polkadot Hub Testnet
-- [x] Runtime interaction via System precompile
-- [x] Cross-VM identity binding using `toAccountId(address)`
-- [x] Native asset support through ERC20 precompile model
-- [x] Verifier adapter compatible with PolkaVM upgrade path
+- a stable verifier adapter that can later point to Rust / PolkaVM backends
 
 ## Why Polkadot
 
@@ -262,7 +258,7 @@ Native asset demo path:
 6. Show the score token being minted or updated.
 7. Refresh the lending quote.
 8. Show the improved APR and borrow cap.
-9. Point out the Track 2-native architecture:
+9. Point out the native Polkadot angle:
    cross-VM certificate binding via the System precompile, native-asset-compatible lending path live, stable adapter for future PolkaVM verifier.
 
 ## Local Setup
