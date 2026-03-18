@@ -126,6 +126,26 @@ export function DashboardScreenView() {
               <div className="ready-badge">{viewModel.certificateReadyLabel}</div>
             ) : null}
 
+            {viewModel.networkPromptVisible ? (
+              <div className="network-prompt">
+                <strong>{viewModel.networkPromptTitle}</strong>
+                <p>{viewModel.networkPromptBody}</p>
+                <div className="network-prompt-actions">
+                  <button type="button" className="button button-primary" onClick={viewModel.addPolkadotHubTestnet}>
+                    Add Polkadot Hub Testnet
+                  </button>
+                  <a
+                    className="button button-secondary network-link"
+                    href={viewModel.chainlistUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open Chainlist
+                  </a>
+                </div>
+              </div>
+            ) : null}
+
             <div className="button-stack">
               <button type="button" className="button button-secondary" onClick={viewModel.connectWallet}>
                 {viewModel.walletConnected ? "Reconnect Wallet" : "Connect Wallet"}

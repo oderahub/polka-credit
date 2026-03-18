@@ -26,6 +26,11 @@ declare global {
   }
 }
 
+type WalletRequestError = Error & {
+  code?: number;
+  data?: { originalError?: { code?: number } };
+};
+
 const fallbackWalletAddress = "0x1111111111111111111111111111111111111111" as const;
 const scoreTokenAddress = getAddress(
   process.env.NEXT_PUBLIC_SCORE_TOKEN_ADDRESS ?? "0x86aadce8f673Ef9D332F1b027D71a0C8f22294B0",
@@ -44,6 +49,7 @@ const nativeAssetAddress = erc20PrecompileAddressFromAssetId(nativeAssetId);
 const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? POLKADOT_HUB_TESTNET.rpcUrl;
 const chainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? POLKADOT_HUB_TESTNET.chainId);
 const quoteAssetDecimals = Number(process.env.NEXT_PUBLIC_QUOTE_ASSET_DECIMALS ?? "18");
+const chainlistUrl = "https://chainlist.org/?search=polkadot%20hub%20testnet";
 const polkadotHubTestnetChain = defineChain({
   id: chainId,
   name: POLKADOT_HUB_TESTNET.name,
@@ -137,6 +143,11 @@ function getStatusToneClass(walletConnected: boolean, verificationStatus: Verifi
   return "tone-cyan";
 }
 
+function getWalletErrorCode(error: unknown) {
+  const walletError = error as WalletRequestError | undefined;
+  return walletError?.code ?? walletError?.data?.originalError?.code;
+}
+
 export function useDashboardViewModel() {
   const [walletAddress, setWalletAddress] = useState<string>(fallbackWalletAddress);
   const [walletConnected, setWalletConnected] = useState(false);
@@ -152,6 +163,7 @@ export function useDashboardViewModel() {
     "Eligibility now comes from a deterministic governance snapshot, not user-selected tiers.",
   ]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [networkPromptVisible, setNetworkPromptVisible] = useState(false);
 
   const publicClient = createPublicClient({
     transport: http(rpcUrl),
@@ -201,6 +213,7 @@ export function useDashboardViewModel() {
         method: "eth_requestAccounts",
       })) as string[];
 
+      setNetworkPromptVisible(false);
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: `0x${chainId.toString(16)}` }],
@@ -216,9 +229,49 @@ export function useDashboardViewModel() {
       setActivityLog((current) => [`Connected wallet ${account} on chain ${chainId}.`, ...current]);
       await refreshLiveState(account);
     } catch (error) {
+      const errorCode = getWalletErrorCode(error);
+      if (errorCode === 4902) {
+        const message = "Polkadot Hub Testnet is not added in this wallet yet.";
+        setNetworkPromptVisible(true);
+        setErrorMessage(message);
+        setActivityLog((current) => [`Wallet is missing Polkadot Hub Testnet.`, ...current]);
+        return;
+      }
       const message = error instanceof Error ? error.message : "Unknown wallet error";
+      setNetworkPromptVisible(false);
       setErrorMessage(message);
       setActivityLog((current) => [`Wallet connection failed: ${message}`, ...current]);
+    }
+  }
+
+  async function addPolkadotHubTestnet() {
+    if (!window.ethereum) return;
+
+    try {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainId: `0x${chainId.toString(16)}`,
+            chainName: POLKADOT_HUB_TESTNET.name,
+            nativeCurrency: {
+              name: "Polkadot",
+              symbol: "DOT",
+              decimals: 18,
+            },
+            rpcUrls: [rpcUrl],
+            blockExplorerUrls: [POLKADOT_HUB_TESTNET.blockscoutUrl],
+          },
+        ],
+      });
+      setNetworkPromptVisible(false);
+      setErrorMessage("");
+      setActivityLog((current) => [`Polkadot Hub Testnet was added to the wallet.`, ...current]);
+      await connectWallet();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to add Polkadot Hub Testnet.";
+      setErrorMessage(message);
+      setActivityLog((current) => [`Add-chain request failed: ${message}`, ...current]);
     }
   }
 
@@ -477,6 +530,10 @@ export function useDashboardViewModel() {
       ? `Connected · ${formatAddress(walletAddress)}`
       : "Awaiting wallet connection",
     certificateReadyLabel: issuedCertificate ? "Certificate ready ✓" : "",
+    networkPromptVisible,
+    networkPromptTitle: "Add Polkadot Hub Testnet",
+    networkPromptBody: "This wallet does not have Polkadot Hub Testnet configured yet. Add it in MetaMask, then reconnect and continue the flow.",
+    chainlistUrl,
     nativeAssetAddress,
     nativeAssetIdLabel: `Asset ID ${nativeAssetId.toString()}`,
     nativeAssetBalanceLabel: `User balance ${formatTokenAmount(quote.nativeAssetBalance)}`,
@@ -493,6 +550,7 @@ export function useDashboardViewModel() {
     activityLog,
     proofPoints,
     connectWallet,
+    addPolkadotHubTestnet,
     refreshLiveState,
     handleCheckEligibility,
     handleSubmitProof,
