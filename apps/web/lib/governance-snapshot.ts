@@ -30,6 +30,7 @@ const SNAPSHOT_SOURCE = "deterministic-governance-snapshot";
 const SNAPSHOT_DATASET_ID = keccak256(stringToHex("polkazk-governance-snapshot-2026-03-13"));
 const CERTIFICATE_PREFIX = "PolkaZK Credit Snapshot Certificate";
 const LOCAL_DEV_OVERRIDE_SOURCE = "local-development-demo-override";
+const DEPLOYMENT_DEMO_OVERRIDE_SOURCE = "deployment-demo-override";
 
 const SNAPSHOT_RECORDS: SnapshotRecord[] = [
   {
@@ -62,10 +63,13 @@ export function resolveGovernanceEligibility(address: string): EligibilityResult
 
   const normalized = getAddress(address);
   const record = SNAPSHOT_RECORDS.find((entry) => entry.address === normalized);
+  const allowDeploymentDemoOverride = process.env.ENABLE_DEMO_OVERRIDE === "1";
   const shouldApplyLocalOverride = process.env.NODE_ENV !== "production" && !record;
-  const overrideParticipationCount = shouldApplyLocalOverride ? 12 : 0;
+  const shouldApplyDeploymentOverride = process.env.NODE_ENV === "production" && allowDeploymentDemoOverride && !record;
+  const shouldApplyOverride = shouldApplyLocalOverride || shouldApplyDeploymentOverride;
+  const overrideParticipationCount = shouldApplyOverride ? 12 : 0;
   const participationCount = record?.participationCount ?? 0;
-  const effectiveParticipationCount = shouldApplyLocalOverride ? overrideParticipationCount : participationCount;
+  const effectiveParticipationCount = shouldApplyOverride ? overrideParticipationCount : participationCount;
   const tier = tierFromParticipationCount(effectiveParticipationCount);
 
   return {
@@ -77,11 +81,15 @@ export function resolveGovernanceEligibility(address: string): EligibilityResult
     datasetId: SNAPSHOT_DATASET_ID,
     source: shouldApplyLocalOverride
       ? LOCAL_DEV_OVERRIDE_SOURCE
-      : record?.source ?? SNAPSHOT_SOURCE,
+      : shouldApplyDeploymentOverride
+        ? DEPLOYMENT_DEMO_OVERRIDE_SOURCE
+        : record?.source ?? SNAPSHOT_SOURCE,
     reason:
       tier > 0
-        ? shouldApplyLocalOverride
-          ? "Eligible through the local development demo override for full-flow testing."
+        ? shouldApplyOverride
+          ? shouldApplyLocalOverride
+            ? "Eligible through the local development demo override for full-flow testing."
+            : "Eligible through the deployment demo override for full-flow testing."
           : `Eligible from governance snapshot with ${effectiveParticipationCount} participation events.`
         : "No qualifying governance participation was found in the current snapshot.",
   };

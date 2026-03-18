@@ -292,12 +292,56 @@ Fill `.env` with:
 Fill `apps/web/.env.local` with:
 
 - `ATTESTER_PRIVATE_KEY`
+- `NEXT_PUBLIC_RPC_URL`
+- `NEXT_PUBLIC_CHAIN_ID`
+- `NEXT_PUBLIC_SCORE_TOKEN_ADDRESS`
+- `NEXT_PUBLIC_ADAPTER_ADDRESS`
+- `NEXT_PUBLIC_LENDING_DEMO_ADDRESS`
+- `NEXT_PUBLIC_QUOTE_ASSET_ADDRESS`
+- `NEXT_PUBLIC_QUOTE_ASSET_ID`
+- `NEXT_PUBLIC_QUOTE_ASSET_DECIMALS`
+- `NEXT_PUBLIC_SYSTEM_PRECOMPILE_ADDRESS`
+- optional: `ENABLE_DEMO_OVERRIDE=1` for a public demo deployment that should allow non-fixture wallets to complete the flow
 
 ### Run the web app
 
 ```bash
 pnpm --filter web dev
 ```
+
+## Deploy To Vercel
+
+This repository is a monorepo. The deployable Next.js app is `apps/web`.
+
+In Vercel:
+
+1. Import the GitHub repository.
+2. Set the **Root Directory** to `apps/web`.
+3. Keep the framework preset as `Next.js`.
+4. Use `pnpm` as the package manager.
+
+Environment variables required in Vercel:
+
+```bash
+NEXT_PUBLIC_RPC_URL=https://services.polkadothub-rpc.com/testnet
+NEXT_PUBLIC_CHAIN_ID=420420417
+NEXT_PUBLIC_SCORE_TOKEN_ADDRESS=0x86aadce8f673Ef9D332F1b027D71a0C8f22294B0
+NEXT_PUBLIC_ADAPTER_ADDRESS=0x9BBf0251BB9CD128c7dcE0474cF016D618D5749C
+NEXT_PUBLIC_LENDING_DEMO_ADDRESS=0x287974951879D77AdEcd8B115D2d16ef396B464c
+NEXT_PUBLIC_QUOTE_ASSET_ADDRESS=0x000007C000000000000000000000000001200000
+NEXT_PUBLIC_QUOTE_ASSET_ID=1984
+NEXT_PUBLIC_QUOTE_ASSET_DECIMALS=18
+NEXT_PUBLIC_SYSTEM_PRECOMPILE_ADDRESS=0x0000000000000000000000000000000000000900
+ATTESTER_PRIVATE_KEY=0xYOUR_ATTESTER_PRIVATE_KEY
+```
+
+Optional for demo-only deployments:
+
+```bash
+ENABLE_DEMO_OVERRIDE=1
+```
+
+Use `ENABLE_DEMO_OVERRIDE=1` only if you want any connected wallet on the deployed app to pass eligibility for judge/demo purposes. Leave it unset or `0` if you want the deployment to use only the fixture-backed snapshot addresses.
 
 ## Deployment
 
