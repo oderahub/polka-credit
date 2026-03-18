@@ -1,5 +1,5 @@
-import { DashboardClient } from "./dashboard-client";
+import { DashboardScreenView } from "./dashboard-screen.view";
 
 export default function HomePage() {
-  return <DashboardClient />;
+  return <DashboardScreenView />;
 }

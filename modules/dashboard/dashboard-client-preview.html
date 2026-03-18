@@ -1,0 +1,63 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DashboardClient Preview</title>
+<style>
+          body { font-family: Arial, sans-serif; background: #0d1117; color: #f5f7fb; padding: 24px; }
+          .panel { border: 1px solid #2a3342; background: #121a24; padding: 16px; margin-bottom: 16px; border-radius: 12px; }
+          .muted { color: #9fb1c7; }
+          .grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 16px; }
+          .steps span { display: inline-block; margin-right: 8px; padding: 6px 10px; border: 1px solid #35506f; border-radius: 999px; }
+          ul { margin: 8px 0 0; }
+          code { color: #8bd3ff; }
+        </style>
+</head>
+<body>
+<h1>DashboardClient Structure Preview</h1>
+<div class="panel"><div class="muted">
+    Modern landing dashboard for PolkaZK Credit that exposes wallet connection, eligibility lookup,
+    certificate submission, live score state, lending quote deltas, infrastructure references, and
+    protocol activity updates.
+  </div></div>
+<div class="panel">
+<strong>Hero</strong><div>Eyebrow: PolkaZK Credit</div>
+<div>Headline: Private reputation becomes a live credit surface.</div>
+<div>Metrics: Live score, APR, Borrow cap</div>
+<div>Wallet rail: status, address, actions, network badge</div>
+</div>
+<div class="grid">
+<div><div class="panel">
+<strong>Primary Column</strong><div class="steps">
+<span>1. Snapshot eligibility</span><span>2. Attested certificate</span><span>3. Credit quote refresh</span>
+</div>
+<ul>
+<li>Snapshot status card</li>
+<li>Proof / public inputs / context fields</li>
+<li>Issued certificate card</li>
+<li>Primary action row</li>
+<li>Activity feed</li>
+</ul>
+</div></div>
+<div><div class="panel">
+<strong>Secondary Column</strong><ul>
+<li>Score panel</li>
+<li>Quote comparison panel</li>
+<li>Native asset infrastructure details</li>
+<li>Track 2 proof points and contract references</li>
+</ul>
+</div></div>
+</div>
+<div class="panel">
+<strong>Interactive Actions</strong><ul>
+<li>
+<code>connectWalletButton</code>: connectWallet()</li>
+<li>
+<code>refreshButton</code>: refreshLiveState(walletAddress)</li>
+<li>
+<code>eligibilityButton</code>: handleCheckEligibility()</li>
+<li>
+<code>submitButton</code>: handleSubmitProof()</li>
+</ul>
+</div>
+</body>
+</html>

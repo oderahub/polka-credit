@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen
+  name="DashboardScreen"
+  intent="Present PolkaZK Credit as a premium one-screen fintech dashboard with one dominant flow: connect wallet, verify eligibility, submit the certificate, and review the on-chain outcome.">
+
+  <viewModel name="DashboardViewModel">
+    <property name="walletAddress" type="string" />
+    <property name="walletConnected" type="boolean" />
+    <property name="isRefreshing" type="boolean" />
+    <property name="scoreHasToken" type="boolean" />
+    <property name="verificationStatus" type="VerificationStatus" />
+    <property name="screenState" type="default|loading|empty|error|success" />
+    <property name="errorMessage" type="string" />
+    <property name="currentStatusMessage" type="string" />
+    <property name="certificateStatusMessage" type="string" />
+    <property name="transactionHashLabel" type="string" />
+    <property name="flowCompleted" type="boolean" />
+    <property name="walletConnectionLabel" type="string" />
+    <property name="certificateReadyLabel" type="string" />
+    <property name="eligibilitySummary" type="string" />
+    <property name="eligibilitySource" type="string" />
+    <property name="eligibilityDatasetId" type="string" />
+    <property name="eligibilityConvictionBucket" type="string" />
+    <property name="issuedCertificateTierLabel" type="string" />
+    <property name="issuedCertificateIssuedBy" type="string" />
+    <property name="issuedCertificateDatasetId" type="string" />
+    <property name="issuedCertificateSource" type="string" />
+    <property name="quoteScoreLabel" type="string" />
+    <property name="quoteScoreValue" type="string" />
+    <property name="quoteAprLabel" type="string" />
+    <property name="quoteBorrowCapLabel" type="string" />
+    <property name="beforeQuoteAprLabel" type="string" />
+    <property name="beforeQuoteBorrowCapLabel" type="string" />
+    <property name="nativeAssetAddress" type="string" />
+    <property name="nativeAssetIdLabel" type="string" />
+    <property name="scoreTokenAddressLabel" type="string" />
+    <property name="adapterAddressLabel" type="string" />
+    <property name="lendingDemoAddressLabel" type="string" />
+    <property name="systemPrecompileAddressLabel" type="string" />
+    <property name="proofPayloadClaimant" type="string" />
+    <property name="activityLog" type="string[]" />
+    <action name="connectWallet" />
+    <action name="refreshLiveState" />
+    <action name="handleCheckEligibility" />
+    <action name="handleSubmitProof" />
+  </viewModel>
+
+  <states>
+    <state name="loading" />
+    <state name="empty" />
+    <state name="error" errorCode="DASHBOARD_ERROR" />
+    <state name="success" />
+    <state name="default" />
+  </states>
+
+  <layout>
+    <region name="header">
+      <component type="Topbar" role="identity">
+        <text role="title" content="PolkaZK Credit" />
+        <text role="body" content="Private reputation becomes a reusable on-chain credit signal." />
+        <component type="WalletBadge" binding="viewModel.walletConnectionLabel" />
+        <action label="Connect Wallet" intent="viewModel.connectWallet" role="primary" />
+      </component>
+    </region>
+
+    <region name="hero" layout="split">
+      <component type="HeroPanel" role="primary-message">
+        <text role="eyebrow" content="Premium Credit Flow" />
+        <text role="title" content="Run the full score issuance flow from one clean dashboard." />
+        <text role="body" content="Connect your wallet, verify governance eligibility, submit the attested certificate, and inspect the refreshed score and lending quote." />
+        <component type="FlowExplainer" role="proof-to-credential-model">
+          <text role="support" content="Certificate = the proof you present off-chain, once." />
+          <text role="support" content="Verifier checks it and binds it to your wallet." />
+          <text role="support" content="SBT = the on-chain credential you keep and reuse." />
+        </component>
+        <component type="InlineProofSummary" role="integrated-technical-proof">
+          <text role="support" binding="viewModel.systemPrecompileAddressLabel" />
+          <text role="support" binding="viewModel.adapterAddressLabel" />
+          <text role="support" binding="viewModel.nativeAssetIdLabel" />
+        </component>
+        <component type="PrimaryMetrics" role="summary-metrics">
+          <component type="MetricCard" binding="viewModel.quoteScoreValue" />
+          <component type="MetricCard" binding="viewModel.quoteAprLabel" />
+          <component type="MetricCard" binding="viewModel.quoteBorrowCapLabel" />
+        </component>
+      </component>
+
+      <component type="ActionRail" role="primary-actions">
+        <text role="label" content="Action Rail" />
+        <text role="body" content="Work top to bottom. The local development build allows full-flow testing with any connected wallet." />
+        <text role="support" binding="viewModel.certificateReadyLabel" />
+        <action label="Connect Wallet" intent="viewModel.connectWallet" role="secondary" />
+        <action label="Refresh Live State" intent="viewModel.refreshLiveState" role="secondary" />
+        <action label="Check Eligibility" intent="viewModel.handleCheckEligibility" role="primary" />
+        <action label="Submit Certificate" intent="viewModel.handleSubmitProof" role="primary" />
+      </component>
+    </region>
+
+    <region name="statusRow" layout="three-column">
+      <component type="StatusCard" role="current-state">
+        <text role="label" content="Current Status" />
+        <text role="value" binding="viewModel.currentStatusMessage" />
+        <text role="support" binding="viewModel.transactionHashLabel" />
+      </component>
+      <component type="EligibilityCard" role="eligibility">
+        <text role="label" content="Eligibility" />
+        <text role="value" binding="viewModel.eligibilitySummary" />
+        <text role="support" binding="viewModel.eligibilitySource" />
+        <text role="support" binding="viewModel.eligibilityConvictionBucket" />
+      </component>
+      <component type="CertificateCard" role="certificate">
+        <text role="label" content="Proof to Credential" />
+        <text role="value" binding="viewModel.certificateStatusMessage" />
+        <text role="support" binding="viewModel.issuedCertificateIssuedBy" />
+        <text role="support" binding="viewModel.issuedCertificateDatasetId" />
+      </component>
+    </region>
+
+    <region name="content" layout="integrated-two-column">
+      <component type="OutcomePanel" role="score-and-quote">
+        <text role="label" content="Live Outcome" />
+        <text role="value" binding="viewModel.quoteScoreValue" />
+        <text role="support" binding="viewModel.quoteScoreLabel" />
+        <text role="support" binding="viewModel.quoteAprLabel" />
+        <text role="support" binding="viewModel.quoteBorrowCapLabel" />
+        <text role="support" binding="viewModel.beforeQuoteAprLabel" />
+        <text role="support" binding="viewModel.beforeQuoteBorrowCapLabel" />
+      </component>
+
+      <component type="FlowPanel" role="progress">
+        <text role="label" content="Flow Progress" />
+        <text role="step" content="1. Connect wallet" />
+        <text role="step" content="2. Check eligibility" />
+        <text role="step" content="3. Issue certificate" />
+        <text role="step" content="4. Submit on-chain" />
+        <text role="step" content="5. Refresh score and quote" />
+      </component>
+
+      <component type="InfraPanel" role="technical-details">
+        <text role="label" content="On-chain Proof" />
+        <text role="support" binding="viewModel.proofPayloadClaimant" />
+        <text role="support" binding="viewModel.systemPrecompileAddressLabel" />
+        <text role="support" binding="viewModel.adapterAddressLabel" />
+        <text role="support" binding="viewModel.lendingDemoAddressLabel" />
+        <text role="support" binding="viewModel.scoreTokenAddressLabel" />
+        <text role="support" binding="viewModel.nativeAssetIdLabel" />
+        <text role="support" binding="viewModel.nativeAssetAddress" />
+      </component>
+    </region>
+
+    <region name="footer">
+      <component type="ActivityPanel" role="recent-events">
+        <text role="label" content="Recent Activity" />
+        <component type="RepeatedActivityItem" binding="viewModel.activityLog" repeat="true" />
+      </component>
+    </region>
+  </layout>
+</screen>

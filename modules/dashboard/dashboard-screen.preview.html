@@ -1,0 +1,148 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DashboardScreen - UI Spec</title>
+<style>
+          body { font-family: system-ui; max-width: 760px; margin: 40px auto; padding: 20px; background: #f7f7f7; color: #111; }
+          .region { border: 1px solid #ddd; border-radius: 10px; padding: 16px; margin: 14px 0; background: white; }
+          .region-name { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.08em; }
+          .component { background: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+          .action { display: inline-block; background: #0066ff; color: white; padding: 8px 16px; border-radius: 6px; margin: 4px 6px 4px 0; font-size: 14px; }
+          .action[role=secondary] { background: #eee; color: #333; }
+          .state-label { font-size: 11px; background: #fff3bf; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+          .error { color: #cc0000; }
+          .property { display: inline-block; background: #eef4ff; border-radius: 999px; padding: 3px 8px; margin: 3px 6px 0 0; font-size: 12px; }
+        </style>
+</head>
+<body>
+<h2>DashboardScreen</h2>
+<p style="color:#666">Present PolkaZK Credit as a premium one-screen fintech dashboard with one dominant flow: connect wallet, verify eligibility, submit the certificate, and review the on-chain outcome.</p>
+<hr>
+<div class="region">
+<div class="region-name">ViewModel</div>
+<span class="property">walletAddress</span><span class="property">walletConnected</span><span class="property">isRefreshing</span><span class="property">scoreHasToken</span><span class="property">verificationStatus</span><span class="property">screenState</span><span class="property">errorMessage</span><span class="property">currentStatusMessage</span><span class="property">certificateStatusMessage</span><span class="property">transactionHashLabel</span><span class="property">flowCompleted</span><span class="property">eligibilitySummary</span><span class="property">eligibilitySource</span><span class="property">eligibilityDatasetId</span><span class="property">eligibilityConvictionBucket</span><span class="property">issuedCertificateTierLabel</span><span class="property">issuedCertificateIssuedBy</span><span class="property">issuedCertificateDatasetId</span><span class="property">issuedCertificateSource</span><span class="property">quoteScoreLabel</span><span class="property">quoteScoreValue</span><span class="property">quoteAprLabel</span><span class="property">quoteBorrowCapLabel</span><span class="property">beforeQuoteAprLabel</span><span class="property">beforeQuoteBorrowCapLabel</span><span class="property">nativeAssetAddress</span><span class="property">nativeAssetIdLabel</span><span class="property">scoreTokenAddressLabel</span><span class="property">adapterAddressLabel</span><span class="property">lendingDemoAddressLabel</span><span class="property">systemPrecompileAddressLabel</span><span class="property">proofPayloadClaimant</span><span class="property">activityLog</span>
+</div>
+<div class="region">
+<div class="region-name">header</div>
+      <div class="component">
+      [Topbar]
+      
+        <p>PolkaZK Credit</p>
+        <p>Private reputation becomes a reusable on-chain credit signal.</p>
+        <div class="component">
+      [WalletBadge]
+       ← viewModel.walletAddress</div>
+        <span class="action" role="primary">Connect Wallet</span>
+      </div>
+    </div>
+<div class="region">
+<div class="region-name">hero</div>
+      <div class="component">
+      [HeroPanel]
+      
+        <p>Premium Credit Flow</p>
+        <p>Run the full score issuance flow from one clean dashboard.</p>
+        <p>Connect your wallet, verify governance eligibility, submit the attested certificate, and inspect the refreshed score and lending quote.</p>
+        <div class="component">
+      [PrimaryMetrics]
+      
+          <div class="component">
+      [MetricCard]
+       ← viewModel.quoteScoreValue</div>
+          <div class="component">
+      [MetricCard]
+       ← viewModel.quoteAprLabel</div>
+          <div class="component">
+      [MetricCard]
+       ← viewModel.quoteBorrowCapLabel</div>
+        </div>
+      </div>
+
+      <div class="component">
+      [ActionRail]
+      
+        <p>Action Rail</p>
+        <p>Work top to bottom. The local development build allows full-flow testing with any connected wallet.</p>
+        <span class="action" role="secondary">Connect Wallet</span>
+        <span class="action" role="secondary">Refresh Live State</span>
+        <span class="action" role="primary">Check Eligibility</span>
+        <span class="action" role="primary">Submit Certificate</span>
+      </div>
+    </div>
+<div class="region">
+<div class="region-name">statusRow</div>
+      <div class="component">
+      [StatusCard]
+      
+        <p>Current Status</p>
+        <p> (viewModel.currentStatusMessage)</p>
+        <p> (viewModel.transactionHashLabel)</p>
+      </div>
+      <div class="component">
+      [EligibilityCard]
+      
+        <p>Eligibility</p>
+        <p> (viewModel.eligibilitySummary)</p>
+        <p> (viewModel.eligibilitySource)</p>
+        <p> (viewModel.eligibilityConvictionBucket)</p>
+      </div>
+      <div class="component">
+      [CertificateCard]
+      
+        <p>Certificate</p>
+        <p> (viewModel.certificateStatusMessage)</p>
+        <p> (viewModel.issuedCertificateIssuedBy)</p>
+        <p> (viewModel.issuedCertificateDatasetId)</p>
+      </div>
+    </div>
+<div class="region">
+<div class="region-name">content</div>
+      <div class="component">
+      [OutcomePanel]
+      
+        <p>Live Outcome</p>
+        <p> (viewModel.quoteScoreValue)</p>
+        <p> (viewModel.quoteScoreLabel)</p>
+        <p> (viewModel.quoteAprLabel)</p>
+        <p> (viewModel.quoteBorrowCapLabel)</p>
+        <p> (viewModel.beforeQuoteAprLabel)</p>
+        <p> (viewModel.beforeQuoteBorrowCapLabel)</p>
+      </div>
+
+      <div class="component">
+      [FlowPanel]
+      
+        <p>Flow Progress</p>
+        <p>1. Connect wallet</p>
+        <p>2. Check eligibility</p>
+        <p>3. Issue certificate</p>
+        <p>4. Submit on-chain</p>
+        <p>5. Refresh score and quote</p>
+      </div>
+
+      <div class="component">
+      [InfraPanel]
+      
+        <p>On-chain Details</p>
+        <p> (viewModel.proofPayloadClaimant)</p>
+        <p> (viewModel.systemPrecompileAddressLabel)</p>
+        <p> (viewModel.adapterAddressLabel)</p>
+        <p> (viewModel.lendingDemoAddressLabel)</p>
+        <p> (viewModel.scoreTokenAddressLabel)</p>
+        <p> (viewModel.nativeAssetIdLabel)</p>
+        <p> (viewModel.nativeAssetAddress)</p>
+      </div>
+    </div>
+<div class="region">
+<div class="region-name">footer</div>
+      <div class="component">
+      [ActivityPanel]
+      
+        <p>Recent Activity</p>
+        <div class="component">
+      [RepeatedActivityItem]
+       ← viewModel.activityLog</div>
+      </div>
+    </div>
+</body>
+</html>

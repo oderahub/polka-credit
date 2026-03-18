@@ -29,6 +29,7 @@ type SnapshotRecord = {
 const SNAPSHOT_SOURCE = "deterministic-governance-snapshot";
 const SNAPSHOT_DATASET_ID = keccak256(stringToHex("polkazk-governance-snapshot-2026-03-13"));
 const CERTIFICATE_PREFIX = "PolkaZK Credit Snapshot Certificate";
+const LOCAL_DEV_OVERRIDE_SOURCE = "local-development-demo-override";
 
 const SNAPSHOT_RECORDS: SnapshotRecord[] = [
   {
@@ -61,20 +62,27 @@ export function resolveGovernanceEligibility(address: string): EligibilityResult
 
   const normalized = getAddress(address);
   const record = SNAPSHOT_RECORDS.find((entry) => entry.address === normalized);
+  const shouldApplyLocalOverride = process.env.NODE_ENV !== "production" && !record;
+  const overrideParticipationCount = shouldApplyLocalOverride ? 12 : 0;
   const participationCount = record?.participationCount ?? 0;
-  const tier = tierFromParticipationCount(participationCount);
+  const effectiveParticipationCount = shouldApplyLocalOverride ? overrideParticipationCount : participationCount;
+  const tier = tierFromParticipationCount(effectiveParticipationCount);
 
   return {
     eligible: tier > 0,
     address: normalized,
     tier,
-    participationCount,
+    participationCount: effectiveParticipationCount,
     convictionBucket: record?.convictionBucket ?? "low",
     datasetId: SNAPSHOT_DATASET_ID,
-    source: record?.source ?? SNAPSHOT_SOURCE,
+    source: shouldApplyLocalOverride
+      ? LOCAL_DEV_OVERRIDE_SOURCE
+      : record?.source ?? SNAPSHOT_SOURCE,
     reason:
       tier > 0
-        ? `Eligible from governance snapshot with ${participationCount} participation events.`
+        ? shouldApplyLocalOverride
+          ? "Eligible through the local development demo override for full-flow testing."
+          : `Eligible from governance snapshot with ${effectiveParticipationCount} participation events.`
         : "No qualifying governance participation was found in the current snapshot.",
   };
 }
