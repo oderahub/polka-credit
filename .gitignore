@@ -5,6 +5,10 @@ node_modules
 dist
 out
 .next
+.next-dev
+*.next_backup_*
+**/.next-dev/
+**/.next_backup_*/
 cache
 broadcast
 coverage
