@@ -158,6 +158,7 @@ export function useDashboardViewModel() {
   const [eligibility, setEligibility] = useState<EligibilityResult | null>(null);
   const [issuedCertificate, setIssuedCertificate] = useState<IssuedCertificate | null>(null);
   const [quote, setQuote] = useState<CreditQuote>(baseQuote);
+  const [hadScoreBeforeSubmission, setHadScoreBeforeSubmission] = useState(false);
   const [activityLog, setActivityLog] = useState<string[]>([
     "Live contracts are deployed on Polkadot Hub Testnet.",
     "Eligibility now comes from a deterministic governance snapshot, not user-selected tiers.",
@@ -374,6 +375,7 @@ export function useDashboardViewModel() {
 
     setVerificationStatus("submitting");
     setErrorMessage("");
+    setHadScoreBeforeSubmission(scoreHasToken || quote.score > 0n);
     setActivityLog((current) => [
       `Requesting tier ${eligibility.tier} snapshot certificate from the attester service.`,
       ...current,
@@ -461,10 +463,19 @@ export function useDashboardViewModel() {
     ? submittedTransactionEntry.replace("Certificate transaction submitted: ", "")
     : "";
   const flowCompleted = Boolean(transactionHashLabel) && (scoreHasToken || quote.score > 0n);
+  const sbtOutcomeLabel = flowCompleted
+    ? hadScoreBeforeSubmission
+      ? "Existing SBT re-verified. Score and quote remained at the current best state."
+      : "New SBT minted on-chain. Score and quote updated from the baseline state."
+    : hadScoreBeforeSubmission
+      ? "This wallet already has a score credential. Submitting again will re-verify it."
+      : "No score credential exists yet. Submit once to verify and mint the SBT.";
   const currentStatusMessage = errorMessage
     ? errorMessage
     : flowCompleted
-      ? "Verifier accepted the proof. Your SBT-backed score and lending quote refreshed from chain."
+      ? hadScoreBeforeSubmission
+        ? "Verifier accepted the proof. This wallet already had an SBT, so the score and lending quote stayed unchanged."
+        : "Verifier accepted the proof. Your SBT-backed score and lending quote refreshed from chain."
       : issuedCertificate
         ? `Certificate proof issued for tier ${issuedCertificate.tier}. Submit it once so the verifier can mint the reusable on-chain credential.`
         : eligibility?.eligible
@@ -473,7 +484,9 @@ export function useDashboardViewModel() {
             ? "Wallet connected. Run eligibility to continue."
             : "Connect a wallet to start the verification flow.";
   const certificateStatusMessage = flowCompleted
-    ? "Proof verified. The wallet now holds the on-chain SBT credential."
+    ? hadScoreBeforeSubmission
+      ? "Proof verified. The wallet already held this on-chain SBT credential."
+      : "Proof verified. The wallet now holds the on-chain SBT credential."
     : issuedCertificate
       ? `Tier ${issuedCertificate.tier} certificate proof prepared for one-time submission`
       : "No certificate proof issued yet.";
@@ -526,6 +539,7 @@ export function useDashboardViewModel() {
     certificateStatusMessage,
     transactionHashLabel,
     flowCompleted,
+    sbtOutcomeLabel,
     walletConnectionLabel: walletConnected
       ? `Connected · ${formatAddress(walletAddress)}`
       : "Awaiting wallet connection",

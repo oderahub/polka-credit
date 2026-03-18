@@ -269,7 +269,7 @@ export function DashboardScreenView() {
                 </div>
                 <div className={`flow-row ${flowCompleted ? "flow-done" : ""}`}>
                   <span className="flow-index">4</span>
-                  <div><strong>Verify and mint SBT</strong><p>{flowCompleted ? `Live score refreshed to ${score}.` : "Approve the transaction in MetaMask to finish."}</p></div>
+                  <div><strong>Verify and mint SBT</strong><p>{flowCompleted ? viewModel.sbtOutcomeLabel : "Approve the transaction in MetaMask to finish."}</p></div>
                 </div>
               </div>
             </article>
