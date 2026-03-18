@@ -45,7 +45,11 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      viem:
+        specifier: 2.29.2
+        version: 2.29.2(typescript@5.8.3)
 
 packages:
 
